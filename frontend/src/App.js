@@ -1,0 +1,35 @@
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import JobsPage from './pages/JobsPage';
+import DataPage from './pages/DataPage';
+import LogsPage from './pages/LogsPage';
+import AgentsPage from './pages/AgentsPage';
+import CompetitiveAgentsPage from './pages/CompetitiveAgentsPage';
+
+export default function App() {
+  const [authenticated, setAuthenticated] = useState(!!localStorage.getItem('token'));
+
+  if (!authenticated) return <LoginPage onLogin={() => setAuthenticated(true)} />;
+
+  return (
+    <BrowserRouter>
+      <div style={{ display: 'flex' }}>
+        <Sidebar />
+        <div style={{ marginLeft: 250, flex: 1, minHeight: '100vh' }}>
+          <Routes>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/jobs" element={<JobsPage />} />
+            <Route path="/data" element={<DataPage />} />
+            <Route path="/logs" element={<LogsPage />} />
+            <Route path="/agents" element={<AgentsPage />} />
+            <Route path="/competitive-agents" element={<CompetitiveAgentsPage />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
+          </Routes>
+        </div>
+      </div>
+    </BrowserRouter>
+  );
+}
