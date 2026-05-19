@@ -36,6 +36,12 @@ const sections = [
       { path: '/competitive-agents', label: 'One-shot Analysis', icon: '🔬' },
     ],
   },
+  {
+    title: 'Custom Views',
+    items: [
+      { path: '/custom-views', label: 'Scraper Views', icon: '🕸️' },
+    ],
+  },
 ];
 
 export default function Sidebar() {

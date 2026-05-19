@@ -11,10 +11,11 @@ const app = express();
 // Security headers
 app.use(helmet());
 
-// CORS restricted to CLIENT_URL
+// CORS restricted to CLIENT_URL (allow both 3000 and 3600)
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+const ALLOWED = [CLIENT_URL, 'http://localhost:3000', 'http://localhost:3600'];
 app.use(cors({
-  origin: CLIENT_URL,
+  origin: (origin, cb) => cb(null, !origin || ALLOWED.includes(origin)),
   credentials: true,
 }));
 
@@ -90,3 +91,6 @@ app.use('/api/gap-robots-txt-aware-rate-limiting', require('./routes/gap_robots_
 app.use('/api/gap-schema-based-data-validation', require('./routes/gap_schema_based_data_validation'));
 app.use('/api/gap-notifications-subsystem', require('./routes/gap_notifications_subsystem'));
 app.use('/api/gap-outbound-webhooks', require('./routes/gap_outbound_webhooks'));
+
+// Custom Scraper Views (4 endpoints: timeline, success-rate, export-csv, rules)
+app.use('/api/custom-views', auth, require('./routes/customViews'));

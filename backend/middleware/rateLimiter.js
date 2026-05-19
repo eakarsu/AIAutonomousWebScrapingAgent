@@ -1,10 +1,12 @@
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 const jwt = require('jsonwebtoken');
 
 /**
- * Key generator: uses JWT user ID if available, falls back to IP.
+ * Key generator: uses JWT user ID if available, falls back to IP
+ * (IPv6-safe via ipKeyGenerator helper).
  */
-const jwtKeyGenerator = (req) => {
+const jwtKeyGenerator = (req, res) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     if (token) {
@@ -12,7 +14,7 @@ const jwtKeyGenerator = (req) => {
       return `user_${decoded.id}`;
     }
   } catch (_) {}
-  return req.ip;
+  return ipKeyGenerator(req, res);
 };
 
 /**

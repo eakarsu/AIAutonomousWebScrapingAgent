@@ -16,6 +16,7 @@ import JobQueuePage from './pages/JobQueuePage';
 import CompetitiveAgentsManagerPage from './pages/CompetitiveAgentsManagerPage';
 import ExportPage from './pages/ExportPage';
 import BacklogToolsPage from './pages/BacklogToolsPage';
+import CustomViewsPage from './pages/CustomViewsPage';
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -42,6 +43,7 @@ export default function App() {
             <Route path="/competitive-agents-manager" element={<CompetitiveAgentsManagerPage />} />
             <Route path="/export" element={<ExportPage />} />
             <Route path="/backlog-tools" element={<BacklogToolsPage />} />
+            <Route path="/custom-views" element={<CustomViewsPage />} />
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
         </div>
