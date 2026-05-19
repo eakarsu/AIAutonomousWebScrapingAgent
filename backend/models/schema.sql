@@ -40,3 +40,13 @@ CREATE TABLE IF NOT EXISTS scraping_logs (
   duration_ms INTEGER,
   created_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS ai_results (
+  id SERIAL PRIMARY KEY,
+  endpoint VARCHAR(100) NOT NULL,
+  model VARCHAR(100) NOT NULL,
+  user_id INTEGER REFERENCES users(id),
+  input_summary TEXT,
+  result JSONB,
+  created_at TIMESTAMP DEFAULT NOW()
+);
