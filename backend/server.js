@@ -94,3 +94,17 @@ app.use('/api/gap-outbound-webhooks', require('./routes/gap_outbound_webhooks'))
 
 // Custom Scraper Views (4 endpoints: timeline, success-rate, export-csv, rules)
 app.use('/api/custom-views', auth, require('./routes/customViews'));
+
+// ── CUA Platform ────────────────────────────────────────────────────────────
+const { setupCuaTables } = require('./models/cua');
+const cuaPool = require('./models/db');
+setupCuaTables(cuaPool);
+
+app.use('/api/cua/desktop-control', require('./routes/cuaFeat_desktopControl'));
+app.use('/api/cua/screen-capture', require('./routes/cuaFeat_screenCapture'));
+app.use('/api/cua/click-planner', require('./routes/cuaFeat_clickPlanner'));
+app.use('/api/cua/form-filler', require('./routes/cuaFeat_formFiller'));
+app.use('/api/cua/multi-tab-orchestration', require('./routes/cuaFeat_multiTabOrchestration'));
+app.use('/api/cua/session-recording', require('./routes/cuaFeat_sessionRecording'));
+app.use('/api/cua/human-handoff', require('./routes/cuaFeat_humanHandoff'));
+app.use('/api/cua/policy-guard', require('./routes/cuaFeat_cuaPolicyGuard'));

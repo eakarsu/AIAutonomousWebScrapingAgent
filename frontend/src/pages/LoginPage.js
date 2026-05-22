@@ -10,7 +10,8 @@ export default function LoginPage({ onLogin }) {
     e.preventDefault();
     setLoading(true); setError('');
     try {
-      const res = await fetch('http://localhost:3001/api/auth/login', {
+      const apiHost = (window.location.port === '3600') ? 'http://localhost:3500' : 'http://localhost:3001';
+      const res = await fetch(`${apiHost}/api/auth/login`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });

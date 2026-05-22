@@ -42,6 +42,19 @@ const sections = [
       { path: '/custom-views', label: 'Scraper Views', icon: '🕸️' },
     ],
   },
+  {
+    title: 'Computer Use',
+    items: [
+      { path: '/cua/desktop-control', label: 'Desktop Control', icon: '🖥️' },
+      { path: '/cua/screen-capture', label: 'Screen Capture', icon: '📸' },
+      { path: '/cua/click-planner', label: 'Click Planner', icon: '🖱️' },
+      { path: '/cua/form-filler', label: 'Form Filler', icon: '📝' },
+      { path: '/cua/multi-tab', label: 'Multi-Tab Orchestration', icon: '🗂️' },
+      { path: '/cua/session-recording', label: 'Session Recording', icon: '🎬' },
+      { path: '/cua/human-handoff', label: 'Human Handoff', icon: '🤝' },
+      { path: '/cua/policy-guard', label: 'Policy Guard', icon: '🛡️' },
+    ],
+  },
 ];
 
 export default function Sidebar() {

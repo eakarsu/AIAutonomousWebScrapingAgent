@@ -18,6 +18,20 @@ import ExportPage from './pages/ExportPage';
 import BacklogToolsPage from './pages/BacklogToolsPage';
 import CustomViewsPage from './pages/CustomViewsPage';
 
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
+import TimelineView from './pages/TimelineView';
+
+import CuaDesktopControlPage from './pages/cua/CuaDesktopControlPage';
+import CuaScreenCapturePage from './pages/cua/CuaScreenCapturePage';
+import CuaClickPlannerPage from './pages/cua/CuaClickPlannerPage';
+import CuaFormFillerPage from './pages/cua/CuaFormFillerPage';
+import CuaMultiTabPage from './pages/cua/CuaMultiTabPage';
+import CuaSessionRecordingPage from './pages/cua/CuaSessionRecordingPage';
+import CuaHumanHandoffPage from './pages/cua/CuaHumanHandoffPage';
+import CuaPolicyGuardPage from './pages/cua/CuaPolicyGuardPage';
+
 export default function App() {
   const [authenticated, setAuthenticated] = useState(!!localStorage.getItem('token'));
 
@@ -29,6 +43,10 @@ export default function App() {
         <Sidebar />
         <div style={{ marginLeft: 250, flex: 1, minHeight: '100vh' }}>
           <Routes>
+        <Route path="/insights/timeline" element={<TimelineView />} />
+        <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
+        <Route path="/codex/operations" element={<CodexOperationsFeature />} />
+
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/jobs" element={<JobsPage />} />
             <Route path="/data" element={<DataPage />} />
@@ -44,6 +62,14 @@ export default function App() {
             <Route path="/export" element={<ExportPage />} />
             <Route path="/backlog-tools" element={<BacklogToolsPage />} />
             <Route path="/custom-views" element={<CustomViewsPage />} />
+            <Route path="/cua/desktop-control" element={<CuaDesktopControlPage />} />
+            <Route path="/cua/screen-capture" element={<CuaScreenCapturePage />} />
+            <Route path="/cua/click-planner" element={<CuaClickPlannerPage />} />
+            <Route path="/cua/form-filler" element={<CuaFormFillerPage />} />
+            <Route path="/cua/multi-tab" element={<CuaMultiTabPage />} />
+            <Route path="/cua/session-recording" element={<CuaSessionRecordingPage />} />
+            <Route path="/cua/human-handoff" element={<CuaHumanHandoffPage />} />
+            <Route path="/cua/policy-guard" element={<CuaPolicyGuardPage />} />
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
         </div>
