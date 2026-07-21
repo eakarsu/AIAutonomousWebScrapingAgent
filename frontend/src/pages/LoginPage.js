@@ -22,8 +22,6 @@ export default function LoginPage({ onLogin }) {
     setLoading(false);
   };
 
-  const fillCredentials = () => { setEmail('admin@example.com'); setPassword('admin123'); };
-
   const s = {
     container: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' },
     card: { background: '#16213e', padding: '40px', borderRadius: '16px', width: '400px', border: '1px solid #0f3460', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' },
@@ -46,7 +44,6 @@ export default function LoginPage({ onLogin }) {
           <input style={s.input} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
           <button style={s.btn} type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Sign In'}</button>
         </form>
-        <button style={s.fillBtn} onClick={fillCredentials}>🔑 Fill Demo Credentials</button>
       </div>
     </div>
   );

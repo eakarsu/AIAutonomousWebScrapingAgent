@@ -10,7 +10,8 @@ const jwtKeyGenerator = (req, res) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'supersecretkey123');
+      if (!process.env.JWT_SECRET) return ipKeyGenerator(req, res);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       return `user_${decoded.id}`;
     }
   } catch (_) {}

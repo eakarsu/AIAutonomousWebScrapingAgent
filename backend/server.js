@@ -31,23 +31,14 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/jobs', auth, require('./routes/jobs'));
 app.use('/api/data', auth, require('./routes/data'));
 app.use('/api/logs', auth, require('./routes/logs'));
+app.use('/api/governed-crawls', require('./routes/governedCrawls'));
 
-// AI agent routes — all subject to 20/hour rate limiter
-app.use('/api/agents', auth, aiLimiter, require('./routes/agents'));
-app.use('/api/agents', auth, aiLimiter, require('./routes/agentsNew'));
-// Apply pass 5 — backlog endpoints (headless plan, proxy select, robots check, schema)
-app.use('/api/agents', auth, aiLimiter, require('./routes/agentsBacklog'));
-// Apply pass 5 wave-1 — additional backlog (data-classify, run-summary)
-app.use('/api/agents', auth, aiLimiter, require('./routes/agentsBacklog2'));
+// Generic agent routes are quarantined; governed crawls use explicit contracts.
 
 // AI results history
 app.use('/api/ai-results', auth, require('./routes/aiResults'));
 
-// Competitive agents — AI limiter on the run sub-route
-app.use('/api/competitive-agents', auth, aiLimiter, require('./routes/competitiveAgents'));
-
-// Async job queue (rate-limited because it triggers AI under the hood)
-app.use('/api/job-queue', auth, aiLimiter, require('./routes/jobQueue'));
+// Model-driven competitive agents and their job queue are deliberately unmounted.
 
 // CSV export routes
 app.use('/api/export', auth, require('./routes/export'));
@@ -73,38 +64,9 @@ app.get('/api/stats', auth, async (req, res) => {
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-// BATCH_00_AUDIT_MOUNTS
-app.use('/api/selector-learning', require('./routes/selectorLearning'));
-app.use('/api/puppeteer-control', require('./routes/puppeteerControl'));
-app.use('/api/anomaly-stream', require('./routes/anomalyStream'));
-app.use('/api/quality-validation', require('./routes/qualityValidation'));
-app.use('/api/competitive-intel-enrich', require('./routes/competitiveIntelEnrich'));
-
-// === Batch 00 Gaps & Frontend Mounts ===
-app.use('/api/gap-ai-css-xpath-selector-auto', require('./routes/gap_ai_css_xpath_selector_auto'));
-app.use('/api/gap-ai-extraction-over-unstructured-html', require('./routes/gap_ai_extraction_over_unstructured_html'));
-app.use('/api/gap-ai-website-structure-change-anomaly', require('./routes/gap_ai_website_structure_change_anomaly'));
-app.use('/api/gap-ai-field-classification-extracted-columns', require('./routes/gap_ai_field_classification_extracted_columns'));
-app.use('/api/gap-headless-browser-engine-integration-puppeteer', require('./routes/gap_headless_browser_engine_integration_puppeteer'));
-app.use('/api/gap-proxy-rotation', require('./routes/gap_proxy_rotation'));
-app.use('/api/gap-robots-txt-aware-rate-limiting', require('./routes/gap_robots_txt_aware_rate_limiting'));
-app.use('/api/gap-schema-based-data-validation', require('./routes/gap_schema_based_data_validation'));
-app.use('/api/gap-notifications-subsystem', require('./routes/gap_notifications_subsystem'));
-app.use('/api/gap-outbound-webhooks', require('./routes/gap_outbound_webhooks'));
+// Unauthenticated browser-control and generated gap routes are quarantined.
 
 // Custom Scraper Views (4 endpoints: timeline, success-rate, export-csv, rules)
 app.use('/api/custom-views', auth, require('./routes/customViews'));
 
-// ── CUA Platform ────────────────────────────────────────────────────────────
-const { setupCuaTables } = require('./models/cua');
-const cuaPool = require('./models/db');
-setupCuaTables(cuaPool);
-
-app.use('/api/cua/desktop-control', require('./routes/cuaFeat_desktopControl'));
-app.use('/api/cua/screen-capture', require('./routes/cuaFeat_screenCapture'));
-app.use('/api/cua/click-planner', require('./routes/cuaFeat_clickPlanner'));
-app.use('/api/cua/form-filler', require('./routes/cuaFeat_formFiller'));
-app.use('/api/cua/multi-tab-orchestration', require('./routes/cuaFeat_multiTabOrchestration'));
-app.use('/api/cua/session-recording', require('./routes/cuaFeat_sessionRecording'));
-app.use('/api/cua/human-handoff', require('./routes/cuaFeat_humanHandoff'));
-app.use('/api/cua/policy-guard', require('./routes/cuaFeat_cuaPolicyGuard'));
+// CUA database mutation and interactive desktop-control endpoints are not part of the governed crawler.
