@@ -28,6 +28,7 @@ app.use(express.json({ limit: '10mb' }));
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/runtime-ai', aiLimiter, require('./routes/runtimeAi'));
 app.use('/api/jobs', auth, require('./routes/jobs'));
 app.use('/api/data', auth, require('./routes/data'));
 app.use('/api/logs', auth, require('./routes/logs'));

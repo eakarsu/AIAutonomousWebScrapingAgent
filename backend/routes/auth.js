@@ -49,4 +49,14 @@ router.post('/register', async (req, res) => {
   }
 });
 
+router.get('/me', require('../middleware/auth'), async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, email, name FROM users WHERE id = $1', [req.user.id]);
+    if (!result.rows.length) return res.status(404).json({ error: 'User not found' });
+    return res.json({ user: result.rows[0] });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
