@@ -6,6 +6,12 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/ai_web_scraping_db'
 });
 
+function requireDemoPassword() {
+  const password = process.env.DEMO_PASSWORD || process.env.SEED_DEMO_PASSWORD || process.env.DEMO_SEED_PASSWORD || '';
+  if (password.length < 12 || password.length > 1024) throw new Error('DEMO_PASSWORD must contain 12-1024 characters');
+  return password;
+}
+
 async function seed() {
   try {
     // Clear existing data
@@ -15,7 +21,7 @@ async function seed() {
     await pool.query('DELETE FROM users');
 
     // Create admin user
-    const hashed = await bcrypt.hash('admin123', 10);
+    const hashed = await bcrypt.hash(requireDemoPassword(), 10);
     const userResult = await pool.query(
       "INSERT INTO users (email, password, name) VALUES ('admin@example.com', $1, 'Admin User') RETURNING id", [hashed]
     );
