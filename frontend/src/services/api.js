@@ -1,6 +1,4 @@
-const API_HOST = (typeof window !== 'undefined' && window.location.port === '3600')
-  ? 'http://localhost:3500' : 'http://localhost:3001';
-const API_URL = API_HOST + '/api';
+const API_URL = '/api';
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');

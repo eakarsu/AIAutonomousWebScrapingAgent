@@ -10,8 +10,7 @@ export default function LoginPage({ onLogin }) {
     e.preventDefault();
     setLoading(true); setError('');
     try {
-      const apiHost = (window.location.port === '3600') ? 'http://localhost:3500' : 'http://localhost:3001';
-      const res = await fetch(`${apiHost}/api/auth/login`, {
+      const res = await fetch('/api/auth/login', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
@@ -44,8 +43,18 @@ export default function LoginPage({ onLogin }) {
           <input style={s.input} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
           <button
             type="button"
-            onClick={() => { setEmail(process.env.REACT_APP_DEMO_EMAIL || ''); setPassword(process.env.REACT_APP_DEMO_PASSWORD || ''); }}
-            disabled={!process.env.REACT_APP_DEMO_EMAIL || !process.env.REACT_APP_DEMO_PASSWORD}
+            onClick={async () => {
+              setError('');
+              try {
+                const response = await fetch('/api/auth/demo-credentials', { cache: 'no-store' });
+                const credentials = await response.json();
+                if (!response.ok) throw new Error(credentials.error || 'Demo credentials are unavailable');
+                setEmail(credentials.email);
+                setPassword(credentials.password);
+              } catch (err) {
+                setError(err.message || 'Demo credentials are unavailable');
+              }
+            }}
             aria-label="Auto Fill Demo Credentials"
             style={{ width: '100%', marginBottom: '12px', padding: '10px 14px', borderRadius: '8px', border: '1px solid currentColor', background: 'transparent', cursor: 'pointer' }}
           >
