@@ -12,7 +12,7 @@ export default function ScheduleOptimizerPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => { api.getJobs().then(setJobs).catch((e) => setError(e.message)); }, []);
+  useEffect(() => { api.getJobs({ limit: 100 }).then((response) => setJobs(Array.isArray(response?.data) ? response.data : [])).catch((e) => setError(e.message)); }, []);
 
   const optimize = async () => {
     setLoading(true); setError(null); setResult(null);

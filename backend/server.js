@@ -34,12 +34,20 @@ app.use('/api/data', auth, require('./routes/data'));
 app.use('/api/logs', auth, require('./routes/logs'));
 app.use('/api/governed-crawls', require('./routes/governedCrawls'));
 
-// Generic agent routes are quarantined; governed crawls use explicit contracts.
+// AI agent routes — all subject to 20/hour rate limiter. The frontend calls
+// /api/agents/* for these AI features, so they must be mounted or it 404s.
+app.use('/api/agents', auth, aiLimiter, require('./routes/agents'));
+app.use('/api/agents', auth, aiLimiter, require('./routes/agentsNew'));
+app.use('/api/agents', auth, aiLimiter, require('./routes/agentsBacklog'));
+app.use('/api/agents', auth, aiLimiter, require('./routes/agentsBacklog2'));
 
 // AI results history
 app.use('/api/ai-results', auth, require('./routes/aiResults'));
 
-// Model-driven competitive agents and their job queue are deliberately unmounted.
+// Competitive agents + async job queue (both invoke AI) — the frontend calls
+// /api/competitive-agents/* and /api/job-queue/*, so mount them.
+app.use('/api/competitive-agents', auth, aiLimiter, require('./routes/competitiveAgents'));
+app.use('/api/job-queue', auth, aiLimiter, require('./routes/jobQueue'));
 
 // CSV export routes
 app.use('/api/export', auth, require('./routes/export'));
@@ -63,6 +71,14 @@ app.get('/api/stats', auth, async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
+
+// Advisory AI reports only; native execution and approval routes stay unchanged.
+const aiWorkspaceSupport = require("./aiWorkspaceAdapters.cjs");
+const aiWorkspaceDatabase = require("./models/db.js");
+app.use('/api/report-workspace', require("./aiWorkspace.cjs").createAIWorkspaceRouter({
+  pool: aiWorkspaceDatabase, authenticateToken: require("./middleware/auth.js"),
+  aiRateLimiter: aiWorkspaceSupport.createWorkspaceLimiter(), features: require("./aiWorkspaceFeatures.json"),
+}));
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Unauthenticated browser-control and generated gap routes are quarantined.
@@ -70,4 +86,15 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 // Custom Scraper Views (4 endpoints: timeline, success-rate, export-csv, rules)
 app.use('/api/custom-views', auth, require('./routes/customViews'));
 
-// CUA database mutation and interactive desktop-control endpoints are not part of the governed crawler.
+// CUA platform — the frontend CUA pages call /api/cua/<slug> (CRUD + AI verbs).
+const { setupCuaTables } = require('./models/cua');
+const cuaPool = require('./models/db');
+setupCuaTables(cuaPool);
+app.use('/api/cua/desktopControl', require('./routes/cuaFeat_desktopControl'));
+app.use('/api/cua/screenCapture', require('./routes/cuaFeat_screenCapture'));
+app.use('/api/cua/clickPlanner', require('./routes/cuaFeat_clickPlanner'));
+app.use('/api/cua/formFiller', require('./routes/cuaFeat_formFiller'));
+app.use('/api/cua/multiTabOrchestration', require('./routes/cuaFeat_multiTabOrchestration'));
+app.use('/api/cua/sessionRecording', require('./routes/cuaFeat_sessionRecording'));
+app.use('/api/cua/humanHandoff', require('./routes/cuaFeat_humanHandoff'));
+app.use('/api/cua/cuaPolicyGuard', require('./routes/cuaFeat_cuaPolicyGuard'));

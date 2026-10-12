@@ -1,3 +1,5 @@
+import FormattedAIReport from "../components/FormattedAIReport";
+import FullFieldPresets from '../components/FullFieldPresets';
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 
@@ -17,7 +19,7 @@ export default function CompetitiveAgentsManagerPage() {
   const [form, setForm] = useState({ name: '', target_urls: '', frequency: 'daily', analysis_type: 'general' });
 
   const load = async () => {
-    try { setAgents(await api.listCompetitiveAgents() || []); } catch (e) { setError(e.message); }
+    try { const response = await api.listCompetitiveAgents(); setAgents(Array.isArray(response) ? response : []); } catch (e) { setError(e.message); }
   };
 
   useEffect(() => { load(); }, []);
@@ -144,9 +146,7 @@ export default function CompetitiveAgentsManagerPage() {
               {latestRun && (
                 <div style={{ ...s.card, marginBottom: 16 }}>
                   <h3 style={{ color: '#e94560' }}>🤖 Latest Run Analysis</h3>
-                  <pre style={{ background: '#1a1a2e', padding: 12, borderRadius: 8, color: '#e0e0e0', overflow: 'auto', fontSize: 12, maxHeight: 360 }}>
-                    {JSON.stringify(latestRun.analysis, null, 2)}
-                  </pre>
+                  <FormattedAIReport response={latestRun.analysis} />
                 </div>
               )}
 
@@ -160,6 +160,7 @@ export default function CompetitiveAgentsManagerPage() {
                       <span style={{ color: r.status === 'failed' ? '#e94560' : '#2ecc71' }}>{r.status}</span>
                     </div>
                     <div style={{ color: '#a0a0b0', fontSize: 12 }}>{new Date(r.run_at).toLocaleString()}</div>
+                    {r.ai_analysis !== null && r.ai_analysis !== undefined && <FormattedAIReport response={r.ai_analysis} title="Saved run analysis" />}
                     {r.error_message && <div style={{ color: '#e94560', fontSize: 12, marginTop: 4 }}>{r.error_message}</div>}
                   </div>
                 ))}
@@ -173,6 +174,11 @@ export default function CompetitiveAgentsManagerPage() {
         <div style={s.modal} onClick={() => setShowCreate(false)}>
           <div style={s.modalContent} onClick={(e) => e.stopPropagation()}>
             <h2 style={{ color: '#e94560', marginBottom: 16 }}>{editing ? 'Edit' : 'New'} Competitive Agent</h2>
+            <FullFieldPresets value={form} onChange={setForm} presets={[
+              { label: 'Retail pricing', values: { name: 'Retail pricing watch', target_urls: 'https://example.com/products\nhttps://example.org/catalog', frequency: 'daily', analysis_type: 'pricing' } },
+              { label: 'Technology review', values: { name: 'Platform technology review', target_urls: 'https://example.net/platform\nhttps://example.org/features', frequency: 'weekly', analysis_type: 'technology' } },
+              { label: 'Content strategy', values: { name: 'Market content review', target_urls: 'https://example.com/blog\nhttps://example.net/resources', frequency: 'weekly', analysis_type: 'content' } },
+            ]} />
             <label style={s.label}>Name</label>
             <input style={s.input} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             <label style={s.label}>Target URLs (one per line)</label>

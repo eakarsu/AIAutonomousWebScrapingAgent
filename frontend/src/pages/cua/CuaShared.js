@@ -3,6 +3,7 @@
  * (no external dependencies — plain React + inline styles)
  */
 import React from 'react';
+import AIReport from '../../components/AIReport';
 
 export const C = {
   bg: '#0d1117',
@@ -51,11 +52,7 @@ export function Err({ msg }) {
 
 export function JsonDisplay({ data }) {
   if (data === null || data === undefined) return null;
-  return (
-    <pre style={s.result}>
-      {typeof data === 'string' ? data : JSON.stringify(data, null, 2)}
-    </pre>
-  );
+  return <AIReport response={data} title="Result details" />;
 }
 
 export function StatusBadge({ status }) {

@@ -11,7 +11,7 @@ export default function JobsPage() {
   const [editing, setEditing] = useState(false);
 
   useEffect(() => { loadJobs(); }, []);
-  const loadJobs = () => api.getJobs().then(setJobs).catch(console.error);
+  const loadJobs = () => api.getJobs({ limit: 20 }).then((response) => setJobs(Array.isArray(response?.data) ? response.data : [])).catch(console.error);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

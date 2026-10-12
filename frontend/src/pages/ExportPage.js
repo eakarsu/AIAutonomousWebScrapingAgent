@@ -13,7 +13,7 @@ export default function ExportPage() {
   const [busy, setBusy] = useState(null);
   const [error, setError] = useState(null);
 
-  useEffect(() => { api.getJobs().then(setJobs).catch(() => {}); }, []);
+  useEffect(() => { api.getJobs({ limit: 100 }).then((response) => setJobs(Array.isArray(response?.data) ? response.data : [])).catch(() => {}); }, []);
 
   const downloadJobs = async () => {
     setBusy('jobs'); setError(null);

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import api from '../services/api';
+import AIReport from '../components/AIReport';
+import FullFieldPresets from '../components/FullFieldPresets';
 
 /**
  * Apply pass 5 backlog tools.
@@ -63,6 +65,11 @@ function ClassifyPanel() {
   };
   return (
     <div style={cs.card}>
+      <FullFieldPresets value={{ record, hints }} onChange={(v) => { setRecord(v.record); setHints(v.hints); }} presets={[
+        { label: 'Product listing', values: { record: '{"name":"Trail Pack","price":"$49.00","stock":12}', hints: 'product, ecommerce' } },
+        { label: 'News article', values: { record: '{"title":"Market update","published_at":"2026-10-01","author":"Editor"}', hints: 'article, publication' } },
+        { label: 'Event notice', values: { record: '{"event":"Autumn Fair","date":"2026-11-12","venue":"Civic Hall"}', hints: 'event, date' } },
+      ]} />
       <span style={cs.label}>Record (JSON)</span>
       <textarea style={{ ...cs.input, minHeight: 100 }} value={record} onChange={(e) => setRecord(e.target.value)} />
       <span style={cs.label}>Hints (comma-sep)</span>
@@ -92,6 +99,11 @@ function SummaryPanel() {
   };
   return (
     <div style={cs.card}>
+      <FullFieldPresets value={{ runs }} onChange={(v) => setRuns(v.runs)} presets={[
+        { label: 'Mixed outcomes', values: { runs: '[{"job_name":"catalog","status":"success","records_extracted":120},{"job_name":"catalog","status":"failed","error":"selector missing"}]' } },
+        { label: 'Healthy trend', values: { runs: '[{"job_name":"directory","status":"success","records_extracted":95},{"job_name":"directory","status":"success","records_extracted":101}]' } },
+        { label: 'Volume drop', values: { runs: '[{"job_name":"prices","status":"success","records_extracted":200},{"job_name":"prices","status":"success","records_extracted":40}]' } },
+      ]} />
       <span style={cs.label}>Runs (JSON array, max 200)</span>
       <textarea style={{ ...cs.input, minHeight: 160 }} value={runs} onChange={(e) => setRuns(e.target.value)} />
       <button style={cs.btn} onClick={run} disabled={loading}>{loading ? 'Summarising...' : 'Summarise Runs'}</button>
@@ -112,7 +124,7 @@ const cs = {
 function ResultBox({ data, error }) {
   if (error) return <div style={cs.err}>{error}</div>;
   if (!data) return null;
-  return <pre style={cs.pre}>{JSON.stringify(data, null, 2)}</pre>;
+  return <AIReport response={data} title="Analysis result" />;
 }
 
 function HeadlessPanel() {
@@ -130,6 +142,11 @@ function HeadlessPanel() {
   };
   return (
     <div style={cs.card}>
+      <FullFieldPresets value={{ url, td, login }} onChange={(v) => { setUrl(v.url); setTd(v.td); setLogin(v.login); }} presets={[
+        { label: 'Public catalog', values: { url: 'https://example.com/products', td: 'Product titles, prices, and stock counts', login: false } },
+        { label: 'Member portal', values: { url: 'https://example.org/members', td: 'Visible member dashboard headings and dates', login: true } },
+        { label: 'Event calendar', values: { url: 'https://example.net/events', td: 'Event titles, dates, venues, and pagination', login: false } },
+      ]} />
       <span style={cs.label}>URL</span>
       <input style={cs.input} value={url} onChange={(e) => setUrl(e.target.value)} />
       <span style={cs.label}>Target Data</span>
@@ -160,6 +177,11 @@ function ProxyPanel() {
       <p style={{ color: '#a0a0b0' }}>
         Returns 503 with `missing: PROXY_POOL` unless PROXY_POOL is set in backend env.
       </p>
+      <FullFieldPresets value={{ exclude }} onChange={(v) => setExclude(v.exclude)} presets={[
+        { label: 'Avoid recent hosts', values: { exclude: 'proxy-east.example.net, proxy-west.example.net' } },
+        { label: 'Avoid slow hosts', values: { exclude: 'proxy-slow.example.org, proxy-legacy.example.org' } },
+        { label: 'Avoid blocked hosts', values: { exclude: 'proxy-blocked.example.com, proxy-retired.example.com' } },
+      ]} />
       <span style={cs.label}>Exclude (comma-sep)</span>
       <input style={cs.input} value={exclude} onChange={(e) => setExclude(e.target.value)} />
       <button style={cs.btn} onClick={run}>Select Proxy</button>
@@ -182,6 +204,11 @@ function RobotsPanel() {
   };
   return (
     <div style={cs.card}>
+      <FullFieldPresets value={{ url, ua }} onChange={(v) => { setUrl(v.url); setUa(v.ua); }} presets={[
+        { label: 'Catalog crawler', values: { url: 'https://example.com/products', ua: 'CatalogResearchBot' } },
+        { label: 'News crawler', values: { url: 'https://example.org/news', ua: 'NewsArchiveBot' } },
+        { label: 'General agent', values: { url: 'https://example.net/events', ua: '*' } },
+      ]} />
       <span style={cs.label}>URL</span>
       <input style={cs.input} value={url} onChange={(e) => setUrl(e.target.value)} />
       <span style={cs.label}>User Agent</span>
@@ -226,6 +253,11 @@ function SchemaPanel() {
   return (
     <div>
       <div style={cs.card}>
+        <FullFieldPresets value={{ sample, name, strict, validateRec }} onChange={(v) => { setSample(v.sample); setName(v.name); setStrict(v.strict); setValidateRec(v.validateRec); }} presets={[
+          { label: 'Product record', values: { sample: '{"title":"Trail Pack","price":49,"in_stock":true}', name: 'ProductRecord', strict: true, validateRec: '{"title":"Trail Pack","price":49,"in_stock":true}' } },
+          { label: 'Article record', values: { sample: '{"headline":"Market update","published_at":"2026-10-01"}', name: 'ArticleRecord', strict: false, validateRec: '{"headline":"Market update","published_at":"2026-10-01"}' } },
+          { label: 'Event record', values: { sample: '{"event":"Autumn Fair","date":"2026-11-12","venue":"Civic Hall"}', name: 'EventRecord', strict: true, validateRec: '{"event":"Autumn Fair","date":"2026-11-12","venue":"Civic Hall"}' } },
+        ]} />
         <span style={cs.label}>Sample (JSON)</span>
         <textarea style={{ ...cs.input, minHeight: 80 }} value={sample} onChange={(e) => setSample(e.target.value)} />
         <span style={cs.label}>Name</span>

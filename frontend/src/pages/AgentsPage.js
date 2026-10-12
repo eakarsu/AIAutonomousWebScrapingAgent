@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import FullFieldPresets from '../components/FullFieldPresets';
+import AIReport from '../components/AIReport';
 import api from '../services/api';
 
 export default function AgentsPage() {
@@ -84,6 +86,11 @@ export default function AgentsPage() {
       </div>
       <div style={s.card}>
         {activeTab === 'analyze' && <>
+          <FullFieldPresets value={{ url, description }} onChange={(v) => { setUrl(v.url); setDescription(v.description); }} presets={[
+            { label: 'Retail catalog', values: { url: 'https://example.com/products', description: 'Identify product names, prices, categories, and pagination.' } },
+            { label: 'News archive', values: { url: 'https://example.org/news', description: 'Identify article titles, publication dates, authors, and next-page links.' } },
+            { label: 'Public directory', values: { url: 'https://example.net/directory', description: 'Identify organization names, locations, and public contact links.' } },
+          ]} />
           <label style={s.label}>Website URL</label>
           <input style={s.input} value={url} onChange={e => setUrl(e.target.value)} placeholder="https://example.com/products" />
           <label style={s.label}>Description (optional)</label>
@@ -91,6 +98,11 @@ export default function AgentsPage() {
           <button style={s.btn} onClick={handleAnalyze} disabled={loading}>{loading ? '⏳ Analyzing...' : '🤖 Analyze URL'}</button>
         </>}
         {activeTab === 'extract' && <>
+          <FullFieldPresets value={{ htmlSnippet, instruction }} onChange={(v) => { setHtmlSnippet(v.htmlSnippet); setInstruction(v.instruction); }} presets={[
+            { label: 'Product cards', values: { htmlSnippet: '<article class="product"><h2>Trail Pack</h2><span class="price">$49.00</span></article>', instruction: 'Extract product name and price from each card.' } },
+            { label: 'Article list', values: { htmlSnippet: '<article><h2>Market update</h2><time>2026-10-01</time></article>', instruction: 'Extract headline and publication date.' } },
+            { label: 'Event listing', values: { htmlSnippet: '<li class="event"><b>Autumn Fair</b><time>2026-11-12</time></li>', instruction: 'Extract event name and date.' } },
+          ]} />
           <label style={s.label}>HTML Snippet</label>
           <textarea style={s.textarea} value={htmlSnippet} onChange={e => setHtmlSnippet(e.target.value)} placeholder="<div class='product'>...</div>" />
           <label style={s.label}>Extraction Instruction</label>
@@ -98,6 +110,11 @@ export default function AgentsPage() {
           <button style={s.btn} onClick={handleExtract} disabled={loading}>{loading ? '⏳ Extracting...' : '📦 Extract Data'}</button>
         </>}
         {activeTab === 'clean' && <>
+          <FullFieldPresets value={{ htmlSnippet }} onChange={(v) => setHtmlSnippet(v.htmlSnippet)} presets={[
+            { label: 'Duplicate products', values: { htmlSnippet: '[{"name":"Trail Pack","price":"$49.00"},{"name":"Trail Pack","price":"$49.00"}]' } },
+            { label: 'Mixed prices', values: { htmlSnippet: '[{"name":"Desk Lamp","price":"USD 29"},{"name":"Notebook","price":"12.50"}]' } },
+            { label: 'Sparse records', values: { htmlSnippet: '[{"name":"Camera","price":null},{"name":"Lens","price":"$89"}]' } },
+          ]} />
           <label style={s.label}>Raw Data (JSON array)</label>
           <textarea style={s.textarea} value={htmlSnippet} onChange={e => setHtmlSnippet(e.target.value)} placeholder='[{"name": "Product 1", "price": "$19.99"}]' />
           <button style={s.btn} onClick={handleClean} disabled={loading}>{loading ? '⏳ Cleaning...' : '🧹 Clean Data'}</button>
@@ -106,7 +123,7 @@ export default function AgentsPage() {
       {result && (
         <div style={s.resultCard}>
           <div style={s.resultTitle}>🤖 AI Analysis Result</div>
-          {result.error ? <div style={{ color: '#e94560' }}>{result.error}</div> : renderResult(result)}
+          {result.error ? <div style={{ color: '#e94560' }}>{result.error}</div> : <AIReport response={result} title="AI analysis result" />}
         </div>
       )}
     </div>

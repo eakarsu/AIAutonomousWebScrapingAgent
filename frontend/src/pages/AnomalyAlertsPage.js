@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import FullFieldPresets from '../components/FullFieldPresets';
+import { reportText } from '../components/AIReport';
 import api from '../services/api';
 
 /**
@@ -46,6 +48,11 @@ export default function AnomalyAlertsPage() {
       </p>
 
       <div style={s.card}>
+        <FullFieldPresets value={{ points, avg }} onChange={(v) => { setPoints(v.points); setAvg(v.avg); }} presets={[
+          { label: 'Price spike', values: { points: '[19.99,20.49,89.50,20.10]', avg: '20.5' } },
+          { label: 'Traffic drop', values: { points: '[990,1010,1005,410,985]', avg: '1000' } },
+          { label: 'Stable volume', values: { points: '[48,50,49,51,50]', avg: '50' } },
+        ]} />
         <div style={s.label}>Data Points (JSON array)</div>
         <input style={s.input} value={points} onChange={(e) => setPoints(e.target.value)} />
         <div style={s.label}>Historical Average (number or JSON)</div>
@@ -86,7 +93,7 @@ export default function AnomalyAlertsPage() {
                   </div>
                   <div style={{ color: '#e0e0e0', fontSize: 13 }}>{a.description}</div>
                   <div style={{ color: '#a0a0b0', fontSize: 12, marginTop: 4 }}>
-                    Index {a.data_point_index} = {JSON.stringify(a.data_point_value)} · Expected {a.expected_range} · Deviation: {a.deviation}
+                    Index {a.data_point_index} = {reportText(a.data_point_value)} · Expected {a.expected_range} · Deviation: {a.deviation}
                   </div>
                   <div style={{ color: '#2ecc71', fontSize: 12, marginTop: 4 }}>→ {a.recommended_action}</div>
                 </div>

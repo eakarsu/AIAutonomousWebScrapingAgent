@@ -64,18 +64,18 @@ export default function CuaFeaturePage({
       let res;
       if (searchQ.trim()) {
         res = await api.search(searchQ.trim(), { page, limit: 20 });
-        setRows(res.data || []);
+        setRows(Array.isArray(res?.data) ? res.data : []);
         setPagination({});
       } else {
         res = await api.list({ page, limit: 20 });
-        setRows(res.data || []);
+        setRows(Array.isArray(res?.data) ? res.data : []);
         setPagination(res.pagination || {});
       }
     } catch (e) { setListErr(e.message); }
     setListLoading(false);
   }, [slug, page, searchQ]); // api ref is stable per slug
 
-  useEffect(() => { if (tab === 'list') loadList(); }, [tab, loadList]);
+  useEffect(() => { if (tab === 'list' || tab === 'ai-panel') loadList(); }, [tab, loadList]);
 
   // ── DETAIL load ─────────────────────────────────────────────────────────
   const loadDetail = async () => {
@@ -314,6 +314,19 @@ export default function CuaFeaturePage({
         <div>
           <div style={s.card}>
             <div style={s.h2}>AI Verb Panel ({aiVerbs.length} verbs)</div>
+            <div style={{ ...s.row, marginBottom: 14 }}>
+              {[0, 1, 2].map((index) => {
+                const record = rows.length ? rows[index % rows.length] : null;
+                return <button key={index} type="button" style={s.btnGhost} disabled={!record || aiPanelLoading}
+                  onClick={() => {
+                    setAiRecordId(String(record.id));
+                    setActiveVerb(aiVerbs[index % aiVerbs.length].verb);
+                    setVerbExtras(Object.fromEntries((aiVerbs[index % aiVerbs.length].extraFields || []).map((field) => [field.name, field.placeholder || `Review ${field.label.toLowerCase()} for this record`])));
+                    setAiPanelResult(null);
+                  }}>Fill example {index + 1}{record ? ` · ${record.name || record.id}` : ''}</button>;
+              })}
+            </div>
+            {!rows.length && <p style={{ color: C.muted }}>Create or select a real record before using an AI example. No record ID will be invented.</p>}
             <div style={{ marginBottom: 14 }}>
               <label style={s.label}>Record ID ({detailIdField})</label>
               <input

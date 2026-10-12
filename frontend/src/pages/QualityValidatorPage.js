@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import FullFieldPresets from '../components/FullFieldPresets';
+import { reportText } from '../components/AIReport';
 import api from '../services/api';
 
 /**
@@ -48,6 +50,11 @@ export default function QualityValidatorPage() {
       </p>
 
       <div style={s.card}>
+        <FullFieldPresets value={{ jobName, runA, runB }} onChange={(v) => { setJobName(v.jobName); setRunA(v.runA); setRunB(v.runB); }} presets={[
+          { label: 'Price drift', values: { jobName: 'Daily product prices', runA: '[{"sku":"A1","price":19.99}]', runB: '[{"sku":"A1","price":29.99}]' } },
+          { label: 'Missing field', values: { jobName: 'Store directory', runA: '[{"store":"North","phone":"555-0100"}]', runB: '[{"store":"North"}]' } },
+          { label: 'Type change', values: { jobName: 'Inventory feed', runA: '[{"sku":"B2","stock":12}]', runB: '[{"sku":"B2","stock":"12"}]' } },
+        ]} />
         <div style={s.label}>Job Name</div>
         <input style={s.input} placeholder="e.g. Daily Product Catalog" value={jobName} onChange={(e) => setJobName(e.target.value)} />
 
@@ -98,7 +105,7 @@ export default function QualityValidatorPage() {
                   </div>
                   <div style={{ color: '#e0e0e0', marginTop: 6, fontSize: 13 }}>{a.description}</div>
                   <div style={{ color: '#a0a0b0', marginTop: 4, fontSize: 12 }}>
-                    A: <code>{JSON.stringify(a.run_a_value)}</code> → B: <code>{JSON.stringify(a.run_b_value)}</code>
+                    A: <code>{reportText(a.run_a_value)}</code> → B: <code>{reportText(a.run_b_value)}</code>
                   </div>
                 </div>
               ))}

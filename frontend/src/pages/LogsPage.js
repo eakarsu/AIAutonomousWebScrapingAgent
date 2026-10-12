@@ -5,7 +5,7 @@ export default function LogsPage() {
   const [logs, setLogs] = useState([]);
   const [filter, setFilter] = useState({ agent: '', status: '' });
 
-  useEffect(() => { api.getLogs(filter).then(setLogs).catch(console.error); }, [filter]);
+  useEffect(() => { api.getLogs({ ...filter, limit: 20 }).then((response) => setLogs(Array.isArray(response?.data) ? response.data : [])).catch(console.error); }, [filter]);
 
   const s = {
     page: { padding: '30px' },

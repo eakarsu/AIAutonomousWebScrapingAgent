@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import api from '../services/api';
+import AIReport from '../components/AIReport';
+import FullFieldPresets from '../components/FullFieldPresets';
 
 /**
  * Async Job Queue.
@@ -20,7 +22,7 @@ export default function JobQueuePage() {
   const load = async () => {
     try {
       const data = await api.listQueueJobs(statusFilter ? { status: statusFilter } : {});
-      setQueue(Array.isArray(data) ? data : []);
+      setQueue(Array.isArray(data?.data) ? data.data : []);
     } catch (e) { setError(e.message); }
   };
 
@@ -121,6 +123,16 @@ export default function JobQueuePage() {
               <option value="run_competitive_agent">run_competitive_agent</option>
             </select>
 
+            {form.job_type !== 'run_competitive_agent' ? <FullFieldPresets value={form} onChange={setForm} presets={form.job_type === 'scrape_url' ? [
+              { label: 'Product catalog', values: { url: 'https://example.com/products', instruction: 'Extract product names and prices', schema: '{"name":"string","price":"number"}' } },
+              { label: 'Article archive', values: { url: 'https://example.org/news', instruction: 'Extract headlines and publication dates', schema: '{"headline":"string","published_at":"string"}' } },
+              { label: 'Event calendar', values: { url: 'https://example.net/events', instruction: 'Extract event titles, dates, and venues', schema: '{"event":"string","date":"string","venue":"string"}' } },
+            ] : [
+              { label: 'Retail site', values: { url: 'https://example.com/products', description: 'Analyze product cards, prices, and pagination.' } },
+              { label: 'News site', values: { url: 'https://example.org/news', description: 'Analyze article layout, dates, and archive navigation.' } },
+              { label: 'Event site', values: { url: 'https://example.net/events', description: 'Analyze event listings, venues, and date formats.' } },
+            ]} /> : <p style={{ color: '#a0a0b0' }}>Choose an existing competitive agent ID. Examples cannot supply a real record reference here.</p>}
+
             {(form.job_type === 'scrape_url' || form.job_type === 'analyze_url') && (
               <>
                 <label style={{ color: '#a0a0b0', fontSize: 12, marginBottom: 4, display: 'block' }}>URL</label>
@@ -168,7 +180,7 @@ export default function JobQueuePage() {
             {selected.result && (
               <div style={{ marginBottom: 12 }}>
                 <strong style={{ color: '#a0a0b0' }}>Result:</strong>
-                <pre style={{ background: '#1a1a2e', padding: 12, borderRadius: 8, color: '#2ecc71', overflow: 'auto', fontSize: 12, maxHeight: 400 }}>{JSON.stringify(selected.result, null, 2)}</pre>
+                <AIReport response={selected.result} title="Saved job result" />
               </div>
             )}
             {selected.error_message && (

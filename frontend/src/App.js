@@ -1,7 +1,9 @@
+import AIReportLibrary from "./components/AIReportLibrary";
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import LoginPage from './pages/LoginPage';
+import AIResultsPage from './pages/AIResultsPage';
 import DashboardPage from './pages/DashboardPage';
 import JobsPage from './pages/JobsPage';
 import DataPage from './pages/DataPage';
@@ -38,7 +40,7 @@ export default function App() {
   if (!authenticated) return <LoginPage onLogin={() => setAuthenticated(true)} />;
 
   return (
-    <BrowserRouter>
+    <><AIReportLibrary floating /><BrowserRouter>
       <div style={{ display: 'flex' }}>
         <Sidebar />
         <div style={{ marginLeft: 250, flex: 1, minHeight: '100vh' }}>
@@ -52,6 +54,7 @@ export default function App() {
             <Route path="/data" element={<DataPage />} />
             <Route path="/logs" element={<LogsPage />} />
             <Route path="/agents" element={<AgentsPage />} />
+            <Route path="/ai-results" element={<AIResultsPage />} />
             <Route path="/competitive-agents" element={<CompetitiveAgentsPage />} />
             <Route path="/schedule-optimizer" element={<ScheduleOptimizerPage />} />
             <Route path="/quality-validator" element={<QualityValidatorPage />} />
@@ -74,6 +77,6 @@ export default function App() {
           </Routes>
         </div>
       </div>
-    </BrowserRouter>
+    </BrowserRouter></>
   );
 }

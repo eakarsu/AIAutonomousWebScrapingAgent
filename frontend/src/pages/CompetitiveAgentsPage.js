@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import FullFieldPresets from '../components/FullFieldPresets';
+import AIReport from '../components/AIReport';
 
 const tabs = [
   { id: 'competitor', label: '🏢 Analyze Competitor', endpoint: '/api/competitive-agents/analyze-competitor' },
@@ -108,6 +110,23 @@ export default function CompetitiveAgentsPage() {
       </div>
 
       <div style={s.card}>
+        <FullFieldPresets value={formData} onChange={setFormData} presets={{
+          competitor: [
+            { label: 'Outdoor retail', values: { competitor_name: 'North Ridge Outfitters', competitor_url: 'https://example.com/outdoor', focus_areas: 'Pricing, assortment, and seasonal promotions' } },
+            { label: 'SaaS platform', values: { competitor_name: 'Acme Analytics', competitor_url: 'https://example.org/analytics', focus_areas: 'Features, plans, and integrations' } },
+            { label: 'Local service', values: { competitor_name: 'Metro Repairs', competitor_url: 'https://example.net/repairs', focus_areas: 'Service coverage, booking, and customer messaging' } },
+          ],
+          market: [
+            { label: 'Retail market', values: { industry: 'Outdoor retail', region: 'North America', timeframe: 'Current quarter' } },
+            { label: 'SaaS market', values: { industry: 'Business analytics SaaS', region: 'Europe', timeframe: 'Next 12 months' } },
+            { label: 'Service market', values: { industry: 'Home repair services', region: 'US Northeast', timeframe: 'Current year' } },
+          ],
+          swot: [
+            { label: 'Retail SWOT', values: { company: 'North Ridge Outfitters', industry: 'Outdoor retail', context: 'Regional retailer expanding online fulfillment.' } },
+            { label: 'SaaS SWOT', values: { company: 'Acme Analytics', industry: 'Business analytics SaaS', context: 'Small platform serving midmarket operations teams.' } },
+            { label: 'Service SWOT', values: { company: 'Metro Repairs', industry: 'Home repair services', context: 'Local business considering same-day booking.' } },
+          ],
+        }[activeTab]} />
         {formConfig[activeTab].map(field => (
           <div key={field.key}>
             <label style={s.label}>{field.label}</label>
@@ -132,7 +151,7 @@ export default function CompetitiveAgentsPage() {
       {result && (
         <div style={s.card}>
           <div style={{ color: '#e94560', fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>Results</div>
-          {renderResult(result)}
+          <AIReport response={result} title="Competitive analysis" />
         </div>
       )}
     </div>

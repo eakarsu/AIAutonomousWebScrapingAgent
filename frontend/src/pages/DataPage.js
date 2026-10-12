@@ -8,7 +8,7 @@ export default function DataPage() {
   const [selected, setSelected] = useState(null);
 
   useEffect(() => { loadData(); }, []);
-  const loadData = () => api.getData({ search }).then(setData).catch(console.error);
+  const loadData = () => api.getData({ search, limit: 20 }).then((response) => setData(Array.isArray(response?.data) ? response.data : [])).catch(console.error);
 
   const handleSearch = (e) => { e.preventDefault(); loadData(); };
 

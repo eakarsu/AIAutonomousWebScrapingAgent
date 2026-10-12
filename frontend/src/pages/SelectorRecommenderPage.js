@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import FullFieldPresets from '../components/FullFieldPresets';
 import api from '../services/api';
 
 /**
@@ -45,6 +46,11 @@ export default function SelectorRecommenderPage() {
       </p>
 
       <div style={s.card}>
+        <FullFieldPresets value={{ selector, html }} onChange={(v) => { setSelector(v.selector); setHtml(v.html); }} presets={[
+          { label: 'Product price', values: { selector: '.old-price', html: '<article class="product"><span data-price="49.00">$49.00</span></article>' } },
+          { label: 'Article title', values: { selector: '.headline-old', html: '<article><h2 class="story-title">Market update</h2></article>' } },
+          { label: 'Event date', values: { selector: '.event-date-old', html: '<li class="event"><time datetime="2026-11-12">November 12</time></li>' } },
+        ]} />
         <div style={s.label}>Failed CSS Selector</div>
         <input style={s.input} placeholder=".product-price-old" value={selector} onChange={(e) => setSelector(e.target.value)} />
         <div style={s.label}>HTML Snippet (paste page source)</div>

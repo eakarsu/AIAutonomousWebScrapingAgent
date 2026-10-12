@@ -55,10 +55,10 @@ export default function LoginPage({ onLogin }) {
                 setError(err.message || 'Demo credentials are unavailable');
               }
             }}
-            aria-label="Auto Fill Demo Credentials"
+            aria-label="Fill demo credentials"
             style={{ width: '100%', marginBottom: '12px', padding: '10px 14px', borderRadius: '8px', border: '1px solid currentColor', background: 'transparent', cursor: 'pointer' }}
           >
-            Auto Fill Demo Credentials
+            Fill demo credentials
           </button>
           <button style={s.btn} type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Sign In'}</button>
         </form>

@@ -9,8 +9,8 @@ export default function DashboardPage() {
 
   const loadStats = () => api.getStats().then(setStats).catch(console.error);
   const loadJobs = () =>
-    api.getJobs({ page: 1, limit: 5 })
-      .then((res) => setRecentJobs(res.data || []))
+    api.getJobs({ page: 1, limit: 20 })
+      .then((res) => setRecentJobs(Array.isArray(res?.data) ? res.data : []))
       .catch(console.error);
 
   useEffect(() => {
