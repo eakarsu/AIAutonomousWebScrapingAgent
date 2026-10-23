@@ -1,3 +1,4 @@
+import DetailPanel from '../components/DetailPanel';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
@@ -5,6 +6,7 @@ import api from '../services/api';
 export default function DashboardPage() {
   const [stats, setStats] = useState({ totalJobs: 0, activeJobs: 0, dataCollected: 0, errors: 0, aiAnalyses: 0 });
   const [recentJobs, setRecentJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
   const navigate = useNavigate();
 
   const loadStats = () => api.getStats().then(setStats).catch(console.error);
@@ -92,7 +94,7 @@ export default function DashboardPage() {
           <thead><tr><th style={s.th}>Name</th><th style={s.th}>URL</th><th style={s.th}>Status</th><th style={s.th}>Runs</th><th style={s.th}>Data</th></tr></thead>
           <tbody>
             {recentJobs.map(job => (
-              <tr key={job.id} style={{ cursor: 'pointer' }} onClick={() => navigate('/jobs')}
+              <tr key={job.id} style={{ cursor: 'pointer' }} onClick={() => setSelectedJob(job)}
                 onMouseEnter={e => e.currentTarget.style.background = '#0f346020'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                 <td style={s.td}>{job.name}</td>
@@ -105,6 +107,7 @@ export default function DashboardPage() {
           </tbody>
         </table>
       </div>
+      <DetailPanel item={selectedJob} onClose={() => setSelectedJob(null)} onEdit={() => { setSelectedJob(null); navigate('/jobs'); }} onDelete={() => setSelectedJob(null)} />
     </div>
   );
 }

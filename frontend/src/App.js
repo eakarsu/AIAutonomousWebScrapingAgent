@@ -24,6 +24,7 @@ import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
 import CodexOperationsFeature from './pages/CodexOperationsFeature';
 
 import TimelineView from './pages/TimelineView';
+import FeaturePack27A from './components/FeaturePack27A';
 
 import CuaDesktopControlPage from './pages/cua/CuaDesktopControlPage';
 import CuaScreenCapturePage from './pages/cua/CuaScreenCapturePage';
@@ -46,6 +47,7 @@ export default function App() {
         <div style={{ marginLeft: 250, flex: 1, minHeight: '100vh' }}>
           <Routes>
         <Route path="/insights/timeline" element={<TimelineView />} />
+        <Route path="/feature-pack" element={<FeaturePack27A />} />
         <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
         <Route path="/codex/operations" element={<CodexOperationsFeature />} />
 

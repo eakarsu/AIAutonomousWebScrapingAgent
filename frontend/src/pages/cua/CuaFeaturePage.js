@@ -1,3 +1,4 @@
+import DetailPanel from '../../components/DetailPanel';
 /**
  * CuaFeaturePage — generic 4-tab page (List / Detail+AI / Create / AI Panel)
  * Used by all 8 CUA feature wrappers.
@@ -29,6 +30,7 @@ export default function CuaFeaturePage({
 
   // ── LIST state ─────────────────────────────────────────────────────────
   const [rows, setRows] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [pagination, setPagination] = useState({});
   const [page, setPage] = useState(1);
   const [searchQ, setSearchQ] = useState('');
@@ -168,7 +170,7 @@ export default function CuaFeaturePage({
                 </thead>
                 <tbody>
                   {rows.map((row) => (
-                    <tr key={row.id} style={{ cursor: 'pointer' }}>
+                    <tr key={row.id} style={{ cursor: 'pointer' }} onClick={() => setSelectedRow(row)}>
                       {listColumns.map((col) => (
                         <td key={col.key} style={s.td}>
                           {col.key === 'status' ? (
@@ -387,6 +389,7 @@ export default function CuaFeaturePage({
           </div>
         </div>
       )}
+      <DetailPanel item={selectedRow} onClose={() => setSelectedRow(null)} onEdit={() => { setDetailId(String(selectedRow.id)); setSelectedRow(null); setTab('detail'); }} onDelete={async () => { if (!window.confirm('Archive this record?')) return; try { await api.remove(selectedRow.id); setSelectedRow(null); loadList(); } catch (e) { alert(e.message); } }} />
     </div>
   );
 }

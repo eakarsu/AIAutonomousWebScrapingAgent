@@ -1,8 +1,10 @@
+import DetailPanel from '../components/DetailPanel';
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 
 export default function LogsPage() {
   const [logs, setLogs] = useState([]);
+  const [selectedLog, setSelectedLog] = useState(null);
   const [filter, setFilter] = useState({ agent: '', status: '' });
 
   useEffect(() => { api.getLogs({ ...filter, limit: 20 }).then((response) => setLogs(Array.isArray(response?.data) ? response.data : [])).catch(console.error); }, [filter]);
@@ -37,7 +39,7 @@ export default function LogsPage() {
         <thead><tr><th style={s.th}>Time</th><th style={s.th}>Job</th><th style={s.th}>Agent</th><th style={s.th}>Action</th><th style={s.th}>Status</th><th style={s.th}>Message</th><th style={s.th}>Duration</th></tr></thead>
         <tbody>
           {logs.map(log => (
-            <tr key={log.id}>
+            <tr key={log.id} style={{ cursor: 'pointer' }} onClick={() => setSelectedLog(log)}>
               <td style={s.td}>{new Date(log.created_at).toLocaleString()}</td>
               <td style={s.td}>{log.job_name || log.job_id}</td>
               <td style={s.td}><code style={{background:'#1a1a2e',padding:'2px 6px',borderRadius:'4px'}}>{log.agent}</code></td>
@@ -49,6 +51,7 @@ export default function LogsPage() {
           ))}
         </tbody>
       </table>
+      <DetailPanel item={selectedLog} onClose={() => setSelectedLog(null)} />
     </div>
   );
 }

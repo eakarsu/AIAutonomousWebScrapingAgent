@@ -51,6 +51,7 @@ app.use('/api/job-queue', auth, aiLimiter, require('./routes/jobQueue'));
 
 // CSV export routes
 app.use('/api/export', auth, require('./routes/export'));
+app.use('/api/feature-pack', require('./routes/featurePack27a').createFeaturePackRouter({ authenticate: auth, loadRecords: async () => (await require('./models/db').query('SELECT * FROM scraping_jobs ORDER BY created_at DESC LIMIT 200')).rows }));
 
 // Stats endpoint (protected)
 const pool = require('./models/db');
